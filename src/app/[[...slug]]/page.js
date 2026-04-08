@@ -1,8 +1,12 @@
 import { StoryblokStory } from '@storyblok/react/rsc';
 import { getStoryblokApi } from '@/lib/storyblok';
 
-export default async function Page({ params }) {
-	const { slug } = await params;
+export default async function Page(props) {
+	const params = await props.params;
+	const searchParams = await props.searchParams;
+
+	const slug = params?.slug || ['home'];
+	const isEditMode = searchParams?._storyblok !== undefined;
 
 	let fullSlug = slug ? slug.join('/') : 'home';
 
@@ -12,6 +16,5 @@ export default async function Page({ params }) {
 
 	const storyblokApi = getStoryblokApi();
 	let { data } = await storyblokApi.get(`cdn/stories/${fullSlug}`, sbParams);
-
-	return <StoryblokStory story={data.story} />;
+	return <StoryblokStory story={data.story}/>;
 }
